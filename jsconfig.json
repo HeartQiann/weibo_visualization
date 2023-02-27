@@ -5,6 +5,7 @@
     "baseUrl": "./",
     "moduleResolution": "node",
     "paths": {
+      //给src文件夹起别名 但是node_modules与dist文件夹中不可以用@
       "@/*": [
         "src/*"
       ]
