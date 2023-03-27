@@ -13,50 +13,89 @@
               <h6 class="font-weight-light">在这里注册，只需以下几步</h6>
               <form class="pt-3">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="请输入用户名">
+                  <input type="text" v-model="user_form.user_name"  class="form-control form-control-lg"  placeholder="请输入用户名">
+                  <span class='tips' v-show="user_form.user_name==''">用户名不能为空</span>
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="请输入密码">
+                  <input type="password" v-model="user_form.password" class="form-control form-control-lg"  placeholder="请输入密码">
+                  <span class='tips' v-show="user_form.password==''">密码不能为空</span>
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="请输入确认密码">
+                  <input type="password" v-model="user_form.password1" class="form-control form-control-lg"  placeholder="请输入确认密码">
+                  <span class='tips' v-show="user_form.password1==''">确认密码不能为空</span>
+                  <span class='tips' v-show="user_form.password1!=''&&user_form.password!=user_form.password1">两次输入密码不一致 请修改~</span>
                 </div>
                 <div class="form-group">
-                  <select class="form-control form-control-lg" id="exampleFormControlSelect2">
-                    <option>普通用户</option>
-                    <option>管理员</option>
+                  <select class="form-control form-control-lg" id="exampleFormControlSelect2" v-model="user_form.is_admin">
+                    <option value = "0" >普通用户</option>
+                    <option value = "1" >管理员</option>
                   </select>
                 </div>
-                <!-- <div class="mb-4">
-                  <div class="form-check">
-                    <label class="form-check-label text-muted">
-                      <input type="checkbox" class="form-check-input">
-                      I agree to all Terms & Conditions
-                    </label>
-                  </div>
-                </div> -->
                 <div class="mt-3">
-                  <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" href="index.html">注册</a>
+                  <button @click="userRegister" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">注册</button>
                 </div>
                 <div class="text-center mt-4 font-weight-light">
                   已有账户？请 
                   <router-link to="/login" class="text-primary">登录</router-link>
-                  <!-- <a href="login.html" class="text-primary">Login</a> -->
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-      <!-- content-wrapper ends -->
     </div>
-    <!-- page-body-wrapper ends -->
   </div>
 </template>
 
 <script>
+  import '/public/static/js/vendor.bundle.base.js';
+  import '/public/static/js/hoverable-collapse.js';
+  import '/public/static/js/template.js';
+  import '/public/static/js/settings.js';
+  import '/public/static/js/off-canvas.js';
+  import '/public/static/js/todolist.js';
 export default {
     name: 'Register',
+    data(){
+      return{
+        user_form:{
+          user_name:'',
+          password:'',
+          password1:'',
+          is_admin:'0',
+        },
+      }
+    },
+    methods:{
+      //用户注册
+      async userRegister(){
+        const {user_name,password,is_admin} = this.user_form;
+        try {
+          let result = await this.$API.reqUserRegister({user_name,password,is_admin});
+          // console.log(result);
+          if(result.code==200){
+            //注册成功
+            this.$message({
+              message: '注册成功！即将跳转登录页',
+              type: 'success'
+            });
+            // 延时器 两秒后执行 这里要使用箭头函数 以免改变this的指向
+            setTimeout(()=>{
+              this.$router.push('/login');
+            },1000);
+          }else if(result.code==10002){
+            this.$message({
+              message: '用户名已存在！请前往登录',
+              type: 'warning'
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        
+        
+      }
+    }
 }
 </script>
 
@@ -76,5 +115,12 @@ export default {
   /* 修改确认密码的背景颜色 */
   .auth form .form-group .form-control{
     background: #e8f0fe;
+  }
+  /* 用户名输入有误时的提示 */
+  .form-group .tips{
+    /* 转为块级元素 */
+    display: block;   
+    color: #f2125e;
+    margin-top:5px;
   }
 </style>

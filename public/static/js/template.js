@@ -12,8 +12,9 @@
 
     function addActiveClass(element) {
       if (current === "") {
-        //for root url
-        if (element.attr('href').indexOf("index.html") !== -1) {
+        //for root url  
+        //2023.3.2 使用indexOf之前 先判断使用indexOf的变量是否为null
+        if (element.attr('href')!=null&&element.attr('href').indexOf("index.html") !== -1) {
           element.parents('.nav-item').last().addClass('active');
           if (element.parents('.sub-menu').length) {
             element.closest('.collapse').addClass('show');

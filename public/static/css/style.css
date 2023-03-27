@@ -9245,7 +9245,6 @@ pre code {
   margin-right: -15px;
   margin-left: -15px;
 }
-
 .no-gutters {
   margin-right: 0;
   margin-left: 0;
@@ -13066,7 +13065,8 @@ input[type="button"].btn-block {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 1px solid #e7eaed;
+  /* 分页器边框 去除 */
+  /* border: 1px solid #e7eaed; */
   border-radius: 0;
 }
 
